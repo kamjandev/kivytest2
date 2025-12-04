@@ -7,6 +7,19 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+       # ----------------------------------------------------
+      # Insert the license acceptance step here:
+      # ----------------------------------------------------
+      - name: Accept Android SDK licenses
+        # This uses environment variables provided by the GitHub Actions runner
+        run: |
+          mkdir -p "$ANDROID_HOME/licenses"
+          # Pipes 'y' into the sdkmanager to automatically agree to all licenses
+          echo -e "\n84831b9a69d70e41\n5fa5ae56ec15383f\n" > "$ANDROID_HOME/licenses/android-sdk-license"
+          echo -e "\n84831b9a69d70e41" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+          # The specific build-tools 36.1 might need this specific Google Maven license as well
+          echo -e "\n46c56852a650948e" > "$ANDROID_HOME/licenses/google-maven-license"
+      # ----------------------------------------------------
       - name: Build APK
         uses: digreatbrian/buildozer-action@v2
         with:
