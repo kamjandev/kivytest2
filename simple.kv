@@ -1,0 +1,131 @@
+# simple.kv: Kivy Design Language (KV) file defining the application's layout and appearance.
+# This file is automatically loaded by the SimpleApp class defined in the Python code.
+
+# --- LoginScreen Definition ---
+# This rule defines the template for the 'LoginScreen' class in Python.
+
+<LoginScreen>:
+    # Assign a unique name to this screen within the ScreenManager
+    name: 'login'
+
+    # Use canvas.before to place a background element underneath all other widgets
+    canvas.before:
+        # Optional: Define a color if a solid background is desired instead of an image
+        # Color:
+        #   rgba: 0.1, 0.3, 0.4, 1
+
+        # Draw a background image using a Rectangle instruction
+        Rectangle:
+            # Source file for the background image
+            source: 'num.jpg'
+            # Position the rectangle at the bottom-left corner of the screen
+            pos: self.pos
+            # Match the size of the rectangle to the size of the screen
+            size: self.size
+
+    # --- UI Elements for the Login Screen ---
+
+    Label:
+        id: output_label
+        # Display the welcome message with Kivy markup for colored text
+        text: "[color=#FFBF00]สวัสดี :[/color] Welcome"
+        # Specify a custom font (requires the font file 'ChakraPetch-SemiBoldItalic.ttf' to be present)
+        font_name:'ChakraPetch-SemiBoldItalic.ttf'
+        color: 1, 1, 1, 1  # White text color
+        size_hint: 0.8, 0.1 # Takes up 80% of screen width, 10% of screen height
+        font_size: '32sp' # Scale font size relative to screen size (sp = scalable pixels)
+        markup:True # Enable text markup (e.g., [color=...])
+        pos_hint: {'center_x': 0.5, 'center_y': 0.8} # Position using relative coordinates
+
+    TextInput:
+        id: user_input
+        hint_text: "name:"
+        multiline: False # Restrict input to a single line
+        size_hint: 0.8, 0.1
+        font_name:'ChakraPetch-SemiBoldItalic.ttf'
+        pos_hint: {'center_x': 0.5, 'center_y': 0.31}
+        # Note: Input values are accessed in Python via `self.ids.user_input.text`
+
+    TextInput:
+        id: phone_input
+        hint_text: "Tel:"
+        multiline: False
+        size_hint: 0.8, 0.1
+        font_name:'ChakraPetch-SemiBoldItalic.ttf'
+        pos_hint: {'center_x': 0.5, 'center_y': 0.21}
+
+    Button:
+        text: "Log In"
+        size_hint: 0.4, 0.1
+        pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+        # When pressed, call the `on_button_press` method defined in the Python LoginScreen class
+        on_press: root.on_button_press()
+
+    Label:
+        id: validation_label_error
+        text: "Name is required!"
+        color: (1, 0, 0, 1) # Red text for visibility
+        size_hint: (0.8, 0.05)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.34}
+        opacity: 0 # Start hidden; the Python code changes this to 1 if validation fails
+
+
+# --- FirstScreen (Main Menu) Definition ---
+# This rule defines the template for the 'FirstScreen' class in Python.
+
+<FirstScreen>:
+    name: 'main_menu'
+
+    # A nested FloatLayout acts as a container for main menu elements
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.545, 0.549, 0.549, 1 # Solid background color for the main menu screen
+            Rectangle:
+                pos: self.pos
+                size: self.size
+       # First Label (The static "welcome" text)
+        Label:
+            id: welcome_prefix_label  # <-- New ID
+            text: 'Welcome'
+            color: 1,0,0,1
+            font_name:'ChakraPetch-SemiBoldItalic.ttf'
+            pos_hint: {'center_x': 0.5, 'top': 0.85} # Position higher up
+            size_hint: (0.8, 0.1)
+            font_size: '60sp' # <-- This text is bigger
+        Label:
+            id: welcome_label
+            font_name:'ChakraPetch-SemiBoldItalic.ttf'
+            font_size: '40sp'
+            pos_hint: {'center_y': 0.7}
+            # The text of this label is set dynamically in the Python `on_enter` method
+
+        # --- Volume Control Widgets ---
+        Label:
+            text: "Volume"
+            size_hint: 0.2, 0.05
+            pos_hint: {'center_x': 0.2, 'center_y': 0.5}
+
+        Slider:
+            id: volume_slider
+            min: 0       # Minimum slider value
+            max: 100     # Maximum slider value
+            value: 20    # Default starting position/volume
+            size_hint: 0.6, 0.05
+            pos_hint: {'center_x': 0.6, 'center_y': 0.5}
+            # When the slider's value changes, call the `set_volume` method
+            # in the Python FirstScreen instance, passing the new value as an argument
+            on_value: root.set_volume(self.value)
+
+        # --- Navigation Button ---
+        Button:
+            text: "Log Out"
+            size_hint: 0.5, 0.1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+            # When pressed, call the `go_back_to_login` method defined in the Python class
+            on_press: root.go_back_to_login()
+            # Alternative inline navigation commands (commented out):
+            # app.root.current refers to the ScreenManager itself
+            # on_press:
+            #    app.root.current = "login"
+            #    root.manager.transition.direction ="left"
